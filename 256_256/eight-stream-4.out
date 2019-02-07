@@ -1,0 +1,47 @@
+==3250== NVPROF is profiling process 3250, command: ./matrixMul_concurrent --streams=8 --wA=64 --wB=64 --hA=64 --hB=64
+==3250== [Matrix Multiply Using CUDA] - Starting...
+GPU Device 0: "Tesla V100-SXM2-16GB" with compute capability 7.0
+
+> Detected Compute SM 7.0 hardware with 80 multi-processors
+MatrixA(64,64), MatrixB(64,64)
+Computing result using CUDA Kernel...
+done
+Performance= 24.40 GFlop/s, Time= 0.021 msec, Size= 524288 Ops, WorkgroupSize= 1024 threads/block
+Checking computed result for correctness: Result = PASS
+
+NOTE: The CUDA Samples are not meant for performance measurements. Results may vary when GPU Boost is enabled.
+Profiling application: ./matrixMul_concurrent --streams=8 --wA=64 --wB=64 --hA=64 --hB=64
+==3250== Profiling result:
+   Start  Duration            Grid Size      Block Size     Regs*    SSMem*    DSMem*      Size  Throughput  SrcMemType  DstMemType           Device   Context    Stream  Name
+340.58ms  3.6160us                    -               -         -         -         -  16.000KB  4.2198GB/s    Pageable      Device  Tesla V100-SXM2         1        22  [CUDA memcpy HtoD]
+340.60ms  3.4240us                    -               -         -         -         -  16.000KB  4.4564GB/s    Pageable      Device  Tesla V100-SXM2         1        22  [CUDA memcpy HtoD]
+340.62ms  3.4240us                    -               -         -         -         -  16.000KB  4.4564GB/s    Pageable      Device  Tesla V100-SXM2         1        22  [CUDA memcpy HtoD]
+340.64ms  3.4240us                    -               -         -         -         -  16.000KB  4.4564GB/s    Pageable      Device  Tesla V100-SXM2         1        22  [CUDA memcpy HtoD]
+340.68ms  4.8960us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        14  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [128]
+340.71ms  4.5760us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        14  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [139]
+340.72ms  4.8000us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        14  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [146]
+340.74ms  4.6400us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        15  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [153]
+340.74ms  4.5440us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        15  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [160]
+340.76ms  4.6400us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        16  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [167]
+340.76ms  4.5440us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        16  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [174]
+340.78ms  4.6720us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        17  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [181]
+340.78ms  4.5120us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        17  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [188]
+340.79ms  4.6400us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        18  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [195]
+340.80ms  4.5760us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        18  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [202]
+340.81ms  4.6720us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        19  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [209]
+340.82ms  4.5120us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        19  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [216]
+340.83ms  4.6400us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        20  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [223]
+340.85ms  4.5120us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        20  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [230]
+340.86ms  4.6720us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        21  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [237]
+340.87ms  4.5440us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        21  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [244]
+340.88ms  4.5760us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        14  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [251]
+340.89ms  4.5760us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        14  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [258]
+340.90ms  4.5760us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        15  void matrixMulCUDA<int=32>(float*, float*, float*, int, int) [265]
+340.91ms  6.0800us              (2 2 1)       (32 32 1)        32  8.0000KB        0B         -           -           -           -  Tesla V100-SXM2         1        15  void matrixMulCUDA_int<int=32>(int*, int*, int*, int, int) [272]
+340.96ms  2.4960us                    -               -         -         -         -  16.000KB  6.1133GB/s      Device    Pageable  Tesla V100-SXM2         1        22  [CUDA memcpy DtoH]
+
+Regs: Number of registers used per CUDA thread. This number includes registers used internally by the CUDA driver and/or tools and can be more than what the compiler shows.
+SSMem: Static shared memory allocated per CUDA block.
+DSMem: Dynamic shared memory allocated per CUDA block.
+SrcMemType: The type of source memory accessed by memory operation/copy
+DstMemType: The type of destination memory accessed by memory operation/copy
