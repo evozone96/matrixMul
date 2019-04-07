@@ -147,7 +147,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //__syncthreads();
     }
 
-    if (0) {
+    if (1) {
     //if (threadIdx.y % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
@@ -163,51 +163,52 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "add.u32 t4, t3, t2;\n\t"
                 "fma.rz.f32 %0, t1, t1, %0;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t4, t3, t2;\n\t"
+                "fma.rz.f32 %0, t1, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t4, t3, t2;\n\t"
+                "fma.rz.f32 %0, t1, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t4, t3, t2;\n\t"
+                "fma.rz.f32 %0, t1, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
+                "fma.rz.f32 t1, %0, t1, %0;\n\t"
+                "add.u32 t4, t3, t2;\n\t"
+                "fma.rz.f32 %0, t1, t1, %0;\n\t"
+                "add.u32 t2, t2, t4;\n\t"
                 "fma.rz.f32 t1, t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
         //}
     }
-    if ((threadIdx.x / 32 ) % 2 == 1) {
+    /*
+    if (threadIdx.y % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
             asm("add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
                 "add.u32 t3, t3, t2;\n\t"
@@ -236,44 +237,13 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "fma.rz.f32 t1, %0, t1, %2;\n\t"
                 "fma.rz.f32 %2, %0, t1, %0;\n\t"
                 "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
                 "fma.rz.f32 t1, t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
         //}
     }
+    */
     // Write the block sub-matrix to device memory;
     // each thread writes one element
     //int c = wB * BLOCK_SIZE * by + BLOCK_SIZE * bx;

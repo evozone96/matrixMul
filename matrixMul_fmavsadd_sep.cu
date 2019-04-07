@@ -105,109 +105,18 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         float x_counter = 0.0;
         asm(".reg .f32 t1;\n\t");
         asm(".reg .u32 t2, t3, t4;\n\t");
-#pragma unroll
-        if (0) {
-        for (int k = 0; k < BLOCK_SIZE; ++k) {
-        //for (float k = 0.1; k < 32.9; k = k+0.99)
-       //{
-            while (x_counter < 1000000) {
-            asm("fma.rz.f32 %0, %3, t1, %2;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "fma.rz.f32 t1, %0, t1, %3;\n\t"
-                "fma.rz.f32 t1, t1, t1, %2;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, t1, t1, %2;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "fma.rz.f32 %0, t1, %0, %3;\n\t"
-                "fma.rz.f32 t1, %0, %3, %0;\n\t"
-                "fma.rz.f32 t1, t1, %2, %0;\n\t"
-                "fma.rz.f32 t1, %0, %0, %3;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "fma.rz.f32 %0, t1, %0, t1;\n\t"
-                "fma.rz.f32 t1, t1, %0, %0;\n\t"
-                "add.u32 %1, t2, t4;\n\t"
-                "fma.rz.f32 %0, t1, %0, t1;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
-
-                x_counter += 1.0;
-           // }
-            //qqq += k*k;
-            //sum += qqq*qqq/(qqq*2.3);
-            //sum += (a+b+k)*qqq;
-            //Csub += As[ty][k] * Bs[k][tx] + sum;
-        }
-        }
-
         // Synchronize to make sure that the preceding
         // computation is done before loading two new
         // sub-matrices of A and B in the next iteration
         //__syncthreads();
-    }
 
-    if (0) {
-    //if (threadIdx.y % 2 == 0) {
+    if ((threadIdx.x /32 ) % 2 == 1) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
             asm("add.u32 t2, t3, t4;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "fma.rz.f32 t1, t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
-
-                x_counter += 1.0;
-            }
-        //}
-    }
-    if ((threadIdx.x / 32 ) % 2 == 1) {
-
-        //for (int k = 0; k < BLOCK_SIZE; ++k) {
-        //for (float k = 0.1; k < 32.9; k = k+0.99)
-       //{
-            while (x_counter < 10000000) {
-            asm("add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
                 "add.u32 t3, t3, t2;\n\t"
@@ -228,38 +137,6 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
        //{
             while (x_counter < 10000000) {
             asm("fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 %0, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, %2, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %0;\n\t"
-                "fma.rz.f32 t1, %0, t1, %2;\n\t"
-                "fma.rz.f32 %2, %0, t1, %0;\n\t"
-                "fma.rz.f32 %0, t1, t1, %0;\n\t"
                 "fma.rz.f32 %0, %0, t1, %0;\n\t"
                 "fma.rz.f32 t1, %0, t1, %0;\n\t"
                 "fma.rz.f32 %2, %0, t1, %0;\n\t"
