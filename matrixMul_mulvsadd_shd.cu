@@ -154,7 +154,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("add.u32 t2, t3, t4;\n\t"
+            asm("add.u32 t2, %1, t4;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
                 "mul.f32 t1, t1, %0;\n\t"
@@ -162,8 +162,8 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "mul.f32 t1, t1, %0;\n\t"
                 "add.u32 t4, t3, t2;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "mul.f32 t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "add.u32 %1, t2, t4;\n\t"
+                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
@@ -217,7 +217,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
     // each thread writes one element
     //int c = wB * BLOCK_SIZE * by + BLOCK_SIZE * bx;
     //C[c + wB * ty + tx] = Csub;
-    C[0] = qqq;
+    C[0] = qqq*result;
 }
 
 void constantInit(float *data, int size, float val)
@@ -299,139 +299,6 @@ matrixMulCUDA_int(int *C, int *A, int *B, int wA, int wB)
         asm(".reg .u32 t1;\n\t");
         for (int k = 0; k < BLOCK_SIZE; ++k)
         {
-            while (x_counter < 1000000) {
-            asm("mul.u32 %0, %1, %2;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, %0, %1;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 t1, t1, %2;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, t1, %0;\n\t"
-                "mul.u32 t1, %0, %0;\n\t"
-                "mul.u32 %0, %0, t1;\n\t": "=r"(qqq): "r"(As[ty][k]), "r"(Bs[k][tx]) );
-
-                x_counter += 1;
-            }
-
             //qqq += k*k;
             //fsum += qqq*qqq/(qqq*3);
             //sum += a+b+k;
@@ -661,11 +528,11 @@ int matrixMultiply(int argc, char **argv, int block_size, dim3 &dimsA, dim3 &dim
         }
         if (block_size == 16)
         {
-            matrixMulCUDA_int<16><<< grid, threads,0, streams[(j+1)%streamNum] >>>(d_C_double, d_A_double, d_B_double, dimsA.x, dimsB.x);
+            //matrixMulCUDA_int<16><<< grid, threads,0, streams[(j+1)%streamNum] >>>(d_C_double, d_A_double, d_B_double, dimsA.x, dimsB.x);
         }
         else
         {
-            matrixMulCUDA_int<32><<< grid, threads,0, streams[(j+1)%streamNum] >>>(d_C_double, d_A_double, d_B_double, dimsA.x, dimsB.x);
+            //matrixMulCUDA_int<32><<< grid, threads,0, streams[(j+1)%streamNum] >>>(d_C_double, d_A_double, d_B_double, dimsA.x, dimsB.x);
         }
     }
     // Record the start event

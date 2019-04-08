@@ -112,24 +112,24 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
        //{
             while (x_counter < 1000000) {
             asm("mul.f32 %0, %3, t1, %2;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
+                "mul.lo.u32 t2, t3, t4;\n\t"
                 "mul.f32 t1, %0, t1, %3;\n\t"
                 "mul.f32 t1, t1, t1, %2;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
+                "mul.lo.u32 t2, t3, t4;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
                 "mul.f32 %0, t1, t1, %0;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
                 "mul.f32 t1, t1, t1, %2;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
+                "mul.lo.u32 t4, t3, t2;\n\t"
                 "mul.f32 %0, t1, %0, %3;\n\t"
                 "mul.f32 t1, %0, %3, %0;\n\t"
                 "mul.f32 t1, t1, %2, %0;\n\t"
                 "mul.f32 t1, %0, %0, %3;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
                 "mul.f32 %0, t1, %0, t1;\n\t"
                 "mul.f32 t1, t1, %0, %0;\n\t"
-                "add.u32 %1, t2, t4;\n\t"
+                "mul.lo.u32 %1, t2, t4;\n\t"
                 "mul.f32 %0, t1, %0, t1;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
@@ -154,37 +154,36 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("add.u32 t2, t3, t4;\n\t"
+            asm("mul.lo.u32 t2, %1, t4;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
                 "mul.f32 t1, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
                 "mul.f32 t1, t1, %0;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
+                "mul.lo.u32 t4, t3, t2;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "mul.f32 t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "mul.lo.u32 %1, t2, t4;\n\t"
+                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
         //}
-    }
-    if (threadIdx.x  % 2 == 0) {
+    } else if (threadIdx.x  % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("add.u32 t2, %1, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t2, t3, t4;\n\t"
-                "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t2, t2, t4;\n\t"
-                "add.u32 t3, t3, t2;\n\t"
-                "add.u32 %1, t3, t2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+            asm("mul.lo.u32 t2, %1, t4;\n\t"
+                "mul.lo.u32 t4, t3, t2;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t3, t3, t2;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t2, t3, t4;\n\t"
+                "mul.lo.u32 t4, t3, t2;\n\t"
+                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.lo.u32 t3, t3, t2;\n\t"
+                "mul.lo.u32 %1, t3, t2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
