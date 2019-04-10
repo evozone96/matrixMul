@@ -35,7 +35,13 @@
 // Helper functions and utilities to work with CUDA
 #include <helper_functions.h>
 #include <helper_cuda.h>
-
+__forceinline__ __device__ unsigned warp_id()
+{
+    // this is not equal to threadIdx.x / 32
+    unsigned ret; 
+    asm volatile ("mov.u32 %0, %warpid;" : "=r"(ret));
+    return ret;
+}
 /**
  * Matrix multiplication (CUDA Kernel) on the device: C = A * B
  * wA is A's width and wB is B's width
@@ -110,13 +116,13 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         // sub-matrices of A and B in the next iteration
         //__syncthreads();
 
-    if ((threadIdx.x /32 ) % 2 == 1) {
+    if ((warp_id() ) % 2 == 1) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("add.u32 t2, t3, t4;\n\t"
+            asm("add.u32 t2, %1, t4;\n\t"
                 "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
                 "add.u32 t3, t3, t2;\n\t"
@@ -125,7 +131,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "add.u32 t4, t3, t2;\n\t"
                 "add.u32 t2, t2, t4;\n\t"
                 "add.u32 t4, t3, t2;\n\t"
-                "add.u32 t4, t3, t2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "add.u32 %1, t3, t2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
@@ -145,7 +151,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "fma.rz.f32 t1, %0, t1, %2;\n\t"
                 "fma.rz.f32 %2, %0, t1, %0;\n\t"
                 "fma.rz.f32 %0, t1, t1, %0;\n\t"
-                "fma.rz.f32 t1, t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "fma.rz.f32 %0, t1, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
@@ -155,7 +161,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
     // each thread writes one element
     //int c = wB * BLOCK_SIZE * by + BLOCK_SIZE * bx;
     //C[c + wB * ty + tx] = Csub;
-    C[0] = qqq;
+    C[0] = qqq*result;
 }
 
 void constantInit(float *data, int size, float val)
