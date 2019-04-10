@@ -106,11 +106,11 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         // Multiply the two matrices together;
         // each thread computes one element
         // of the block sub-matrix
-      int result;
+      double result;
         float qqq =0;
         float x_counter = 0.0;
         asm(".reg .f32 t1;\n\t");
-        asm(".reg .u32 t2, t3, t4;\n\t");
+        asm(".reg .f64 t2, t3, t4;\n\t");
 #pragma unroll
         if (0) {
         for (int k = 0; k < BLOCK_SIZE; ++k) {
@@ -118,25 +118,25 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
        //{
             while (x_counter < 1000000) {
             asm("mul.f32 %0, %3, t1, %2;\n\t"
-                "mul.lo.u32 t2, t3, t4;\n\t"
+                "mul.f64 t2, t3, t4;\n\t"
                 "mul.f32 t1, %0, t1, %3;\n\t"
                 "mul.f32 t1, t1, t1, %2;\n\t"
-                "mul.lo.u32 t2, t3, t4;\n\t"
+                "mul.f64 t2, t3, t4;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
                 "mul.f32 %0, t1, t1, %0;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
                 "mul.f32 t1, t1, t1, %2;\n\t"
                 "mul.f32 t1, %0, t1, %0;\n\t"
-                "mul.lo.u32 t4, t3, t2;\n\t"
+                "mul.f64 t4, t3, t2;\n\t"
                 "mul.f32 %0, t1, %0, %3;\n\t"
                 "mul.f32 t1, %0, %3, %0;\n\t"
                 "mul.f32 t1, t1, %2, %0;\n\t"
                 "mul.f32 t1, %0, %0, %3;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
                 "mul.f32 %0, t1, %0, t1;\n\t"
                 "mul.f32 t1, t1, %0, %0;\n\t"
-                "mul.lo.u32 %1, t2, t4;\n\t"
-                "mul.f32 %0, t1, %0, t1;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "mul.f64 %1, t2, t4;\n\t"
+                "mul.f32 %0, t1, %0, t1;\n\t": "=f"(qqq), "=d"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
            // }
@@ -153,23 +153,23 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //__syncthreads();
     }
 
-    if (1) {
+    if (0) {
     //if (threadIdx.y % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("mul.lo.u32 t2, %1, t4;\n\t"
+            asm("mul.f64 t2, %1, t4;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
                 "mul.f32 t1, t1, %0;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
                 "mul.f32 t1, t1, %0;\n\t"
-                "mul.lo.u32 t4, t3, t2;\n\t"
+                "mul.f64 t4, t3, t2;\n\t"
                 "mul.f32 %0, t1, %0;\n\t"
-                "mul.lo.u32 %1, t2, t4;\n\t"
-                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "mul.f64 %1, t2, t4;\n\t"
+                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=d"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
@@ -180,16 +180,16 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //for (float k = 0.1; k < 32.9; k = k+0.99)
        //{
             while (x_counter < 10000000) {
-            asm("mul.lo.u32 t2, %1, t4;\n\t"
-                "mul.lo.u32 t4, t3, t2;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
-                "mul.lo.u32 t3, t3, t2;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
-                "mul.lo.u32 t2, t3, t4;\n\t"
-                "mul.lo.u32 t4, t3, t2;\n\t"
-                "mul.lo.u32 t2, t2, t4;\n\t"
-                "mul.lo.u32 t3, t3, t2;\n\t"
-                "mul.lo.u32 %1, t3, t2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+            asm("mul.f64 t2, %1, t4;\n\t"
+                "mul.f64 t4, t3, t2;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
+                "mul.f64 t3, t3, t2;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
+                "mul.f64 t2, t3, t4;\n\t"
+                "mul.f64 t4, t3, t2;\n\t"
+                "mul.f64 t2, t2, t4;\n\t"
+                "mul.f64 t3, t3, t2;\n\t"
+                "mul.f64 %1, t3, t2;\n\t": "=f"(qqq), "=d"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }
@@ -209,7 +209,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 "mul.f32 t1, t1, %2;\n\t"
                 "mul.f32 %2, t1, %0;\n\t"
                 "mul.f32 %2, t1, %0;\n\t"
-                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=r"(result): "f"(sum), "f"(fsum) );
+                "mul.f32 %0, t1, %2;\n\t": "=f"(qqq), "=d"(result): "f"(sum), "f"(fsum) );
 
                 x_counter += 1.0;
             }

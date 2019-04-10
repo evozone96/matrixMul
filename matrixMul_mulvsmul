@@ -35,13 +35,7 @@
 // Helper functions and utilities to work with CUDA
 #include <helper_functions.h>
 #include <helper_cuda.h>
-__forceinline__ __device__ unsigned warp_id()
-{
-    // this is not equal to threadIdx.x / 32
-    unsigned ret; 
-    asm volatile ("mov.u32 %0, %warpid;" : "=r"(ret));
-    return ret;
-}
+
 /**
  * Matrix multiplication (CUDA Kernel) on the device: C = A * B
  * wA is A's width and wB is B's width
@@ -153,7 +147,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
         //__syncthreads();
     }
 
-    if (1) {
+    if (0) {
     //if (threadIdx.y % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
@@ -174,7 +168,7 @@ matrixMulCUDA(float *C, float *A, float *B, int wA, int wB)
                 x_counter += 1.0;
             }
         //}
-    } else if (warp_id()  % 2 == 0) {
+    } else if (threadIdx.x  % 2 == 0) {
 
         //for (int k = 0; k < BLOCK_SIZE; ++k) {
         //for (float k = 0.1; k < 32.9; k = k+0.99)
